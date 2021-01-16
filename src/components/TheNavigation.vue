@@ -1,33 +1,36 @@
 <template>
-    <nav id="nav">
-        <img :src="bassimg.img" :alt="bassimg.desc" />
-        <p class="logo">BassTracker</p>
+<div>
+<div>
+  <b-navbar id="nav" toggleable="lg" type="dark" variant="info">
+    <img :src="bassimg.img" :alt="bassimg.desc" />
+    <b-navbar-brand href="#">BassTracker</b-navbar-brand>
+
+      <b-navbar-nav>
+        <b-nav-item to="/">Home</b-nav-item>
         <ul class="nav-links">
             <li class="links">
-                <router-link to="/">
-                    Home
-                </router-link>
+                <b-nav-item to="/user">User-Dashboard</b-nav-item>
             </li>
-            <li 
+            <li
                 v-for="destination in destinations"
                 :key="destination.name"
                 class="links"
             >
-                <router-link 
+                <b-nav-item
                     :to="{
                         name: 'DestinationDetails',
                         params: {slug:destination.slug}
                     }"
                 >
                     {{destination.name}}
-                </router-link>
-            </li>
-            <li class="links">
-                <router-link to="/user">Dashboard</router-link>
+                </b-nav-item>
             </li>
         </ul>
+      </b-navbar-nav>
+  </b-navbar>
+</div>
     
-    </nav>
+</div>
 </template>
 
 <script>

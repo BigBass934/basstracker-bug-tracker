@@ -50,7 +50,7 @@ img {
 }
 .experience-details {
     display: flex;
-    justify-content: space-between;
+    justify-content:space-between;
     padding: 40px 0;
 }
 p {

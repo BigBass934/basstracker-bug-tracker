@@ -25,31 +25,31 @@ const routes = [
   //   component: () =>
   //     import(/* webpackChunkName: "about" */ "../views/About.vue")
   // },
-  {
-    path: "/brazil",
-    name: "brazil",
-    props: true,
-    component: () => import(/* webpackChunkName: "brazil" */ "../views/Brazil")
-  }
-  ,
-  {
-    path: "/hawaii",
-    name: "hawaii",
-    props: true,
-    component: () => import(/* webpackChunkName: "hawaii" */ "../views/Hawaii")
-  },
-  {
-    path: "/panama",
-    name: "panama",
-    props: true,
-    component: () => import(/* webpackChunkName: "panama" */ "../views/Panama")
-  },
-  {
-    path: "/jamaica",
-    name: "jamaica",
-    props: true,
-    component: () => import(/* webpackChunkName: "jamaica" */ "../views/Jamaica")
-  },
+  // {
+  //   path: "/brazil",
+  //   name: "brazil",
+  //   props: true,
+  //   component: () => import(/* webpackChunkName: "brazil" */ "../views/Brazil")
+  // }
+  // ,
+  // {
+  //   path: "/by-date",
+  //   name: "by-date",
+  //   props: true,
+  //   component: () => import(/* webpackChunkName: "by-date" */ "../views/By-Date")
+  // },
+  // {
+  //   path: "/panama",
+  //   name: "panama",
+  //   props: true,
+  //   component: () => import(/* webpackChunkName: "panama" */ "../views/Panama")
+  // },
+  // {
+  //   path: "/jamaica",
+  //   name: "jamaica",
+  //   props: true,
+  //   component: () => import(/* webpackChunkName: "jamaica" */ "../views/Jamaica")
+  // },
   {
     path: "/destination/:slug",
     name: "DestinationDetails",

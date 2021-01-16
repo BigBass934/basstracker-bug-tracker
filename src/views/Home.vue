@@ -1,8 +1,11 @@
 <template>
   <div class="home">
     <h1>
-      All Destinations
+      Welcome To BassTracker
     </h1>
+    <p>
+      Select one of the options below to begin:
+    </p>
     <div class="destinations">
     <div v-for="destination in destinations"
     :key="destination.name">
@@ -54,5 +57,8 @@ a{
 a:hover,
 a:visited{
   text-decoration:underline;
+}
+h1{
+  padding: 10px;
 }
 </style>
