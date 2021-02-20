@@ -154,5 +154,52 @@ export default {
         }
       ]
     }
-  ]
+  ],
+  projects: [
+    {
+      name: "BassTracker Bug Tracker",
+      slug: "basstracker bug tracker",
+      description: "A Bug Tracker made by Big Bass (Jonah)",
+      id: 0
+    },
+    {
+      name: "OtherProject",
+      slug: "otherproject",
+      description: "A Project that isn't the Bug Tracker made by Big Bass (Jonah)",
+      id: 1
+    },
+  ],
+  tickets: [
+      {
+      projectId: 0,
+      name: "First Ticket Bug",
+      slug: "first ticket bug",
+      description: "This is the first BassTracker 'test bug'",
+      timestamp: "1/23/2021",
+      tag: "test"
+    },
+    {
+      projectId: 1,
+      name: "First Project2 Ticket Bug",
+      slug: "first project2 ticket bug",
+      description: "This is the first OtherProject 'test bug'",
+      timestamp: "1/23/2021",
+      tag: "bug"
+    },
+    {
+      projectId: 0,
+      name: "2nd BassTracker Ticket Bug",
+      slug: "2nd basstracker ticket bug",
+      description: "This is the second BassTracker 'test bug'",
+      timestamp: "1/23/2021",
+      tag: "serious"
+    },
+  ],
+  tagTypes: [
+    "serious", "bug", "test"
+  ],
+  items: [{"TicketId":"0","Project":"BassTracker","TicketName":"First Ticket Bug","slug":"first ticket bug","TicketDescription":"This is the first BassTracker 'test bug'","Timestamp":"1/23/2021","Tag":"test"},
+  {"TicketId":"1", "Project":"OtherProject","TicketName":"First Project2 Ticket Bug","slug":"first project2 ticket bug","TicketDescription":"This is the first OtherProject 'test bug'","Timestamp":"1/23/2021","Tag":"bug"},
+  {"TicketId":"2", "Project":"BassTracker","TicketName":"2nd BassTracker Ticket Bug","slug":"2nd basstracker ticket bug","TicketDescription":"This is the second BassTracker 'test bug'","Timestamp":"1/23/2021","Tag":"serious"}],
+
 };

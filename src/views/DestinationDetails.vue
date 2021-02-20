@@ -38,6 +38,12 @@
             </div>
             <router-view :key="$route.path" />
         </section>
+        <section>
+            <h1>Table</h1>
+            <b-table :fields="truefields" :items="truedata">
+            </b-table>
+            
+        </section>
     </div>
 </template>
 <script>
@@ -49,7 +55,7 @@ export default {
     },
     data(){
         return{
-            
+        
         }
     },
     props: {
@@ -63,6 +69,51 @@ export default {
             return store.destinations.find(
                 destination => destination.slug === this.slug
             )
+        },
+        projects(){
+            return store.projects;
+        },
+        truefields(){
+            if(this.destination.slug === "project-list") {
+                return ['name', 'slug', 'description']
+            }
+            else{
+                return ['name', 'slug']
+            }
+        },
+        truedata(){
+            let finaldata = [];
+            let i;
+            if(this.destination.slug === 'project-list') {
+                let len = this.projects.length;
+                console.log(this.projects);
+                for(i=0; i<len; i++){
+                    let curProject = this.projects[i];
+                    let curDict = {
+                        name: curProject.name,
+                        slug: curProject.slug,
+                        description: curProject.description
+                    }
+                    console.log(curDict);
+                    finaldata.push(curDict);
+                }
+            
+            }
+            else {
+                let len = this.destination.experiences.length;
+                for(i=0; i < len; i++){
+                    //console.log(this.destination.experiences);
+                    //console.log(experience.name);
+                    let curExperience = this.destination.experiences[i];
+                    let curDict = {
+                        name: curExperience.name,
+                        slug: curExperience.slug
+                    }
+                    console.log(curDict);
+                    finaldata.push(curDict);
+                }
+            }
+            return finaldata;
         }
     }
 }
