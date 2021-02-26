@@ -362,6 +362,16 @@
                 <b-row class="mb-2">
                   <b-col sm="3" class="text-sm-right">
                     <b>
+                      Ticket ID:
+                    </b>
+                  </b-col>
+                  <b-col>
+                    {{ row.item.ticketId }}
+                  </b-col>
+                </b-row>
+                <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right">
+                    <b>
                       Ticket Name
                     </b>
                   </b-col>
@@ -443,7 +453,9 @@ export default {
       ],
       destinations: store.destinations,
       // The ticket items
-      items: store.items,
+      items: [],
+      // The List of Available Projects when creating a new Project
+      projectOptions: [],
       // -> Data used & Updated by/for the Create New Ticket(s) Modal
       sortedBy: "",
       newName: "",
@@ -481,6 +493,10 @@ export default {
       filterOn: [],
     };
   },
+  created: function() {
+    this.getTicketData("http://localhost:5000/api/v1/ticket/");
+    this.getProjectsData("http://localhost:5000/api/v1/project/");
+  },
   computed: {
     sortOptions() {
       // Create an options list from our fields
@@ -490,45 +506,8 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-    projects() {
-      return store.projects;
-    },
-    tickets() {
-      return store.tickets;
-    },
-    theItems() {
-      return store.items;
-    },
     tagTypes() {
       return store.tagTypes;
-    },
-    ticket_data_by_project() {
-      let finaldata = [];
-      let i;
-      let j;
-      let projectLen = this.projects.length;
-      let ticketLen = this.tickets.length;
-      //console.log(ticketLen);
-      for (i = 0; i < projectLen; i++) {
-        let curProject = this.projects[i];
-        for (j = 0; j < ticketLen; j++) {
-          let curTicket = this.tickets[j];
-          if (curTicket.projectId === curProject.id) {
-            let curDict = {
-              Project: curProject.name,
-              projectId: curTicket.projectId,
-              TicketName: curTicket.name,
-              Tag: curTicket.tag,
-              Timestamp: curTicket.timestamp,
-              TicketDescription: curTicket.description,
-              slug: curTicket.slug,
-            };
-            finaldata.push(curDict);
-          }
-        }
-      }
-      //console.log(finaldata);
-      return finaldata;
     },
     getNewTagOptions() {
       let finalTagList = [];
@@ -548,10 +527,10 @@ export default {
     getNewProjectOptions() {
       let finalProjectList = [];
       let i;
-      let projectsLen = this.projects.length;
+      let projectsLen = this.projectOptions.length;
       for (i = 0; i < projectsLen; i++) {
-        let curTag = this.projects[i].name;
-        let curId = this.projects[i].id;
+        let curTag = this.projectOptions[i].name;
+        let curId = this.projectOptions[i].projectId;
         let curDict = {
           value: { name: curTag, id: curId },
           text: curTag,
@@ -567,6 +546,111 @@ export default {
     //this.totalRows = this.items.length;
   },
   methods: {
+    // All Tickets GET method implementation:
+    async getTicketData(url = "") {
+      // Default options are marked with *
+      try {
+        const response = await fetch(url, {
+          method: "GET", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          //body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        //console.log(response)
+        let theJson = await response.json();
+        //console.log(this.items);
+        this.items = theJson;
+        //console.log(this.items);
+        return theJson; // parses JSON response into native JavaScript objects
+      } catch (e) {
+        alert("Error with request");
+        console.log(e);
+      }
+    },
+    // All Projects GET method implementation:
+    async getProjectsData(url = "") {
+      // Default options are marked with *
+      try {
+        const response = await fetch(url, {
+          method: "GET", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          //body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        //console.log(response)
+        let theJson = await response.json();
+        //console.log(theJson)
+        //console.log(this.items);
+        this.projectOptions = theJson;
+        //console.log(this.items);
+        return theJson; // parses JSON response into native JavaScript objects
+      } catch (e) {
+        alert("Error with request");
+        console.log(e);
+      }
+    },
+    // New Ticket POST method implementation:
+    async postTicketsData(url = "", data = {}) {
+      // Default options are marked with *
+      try {
+        console.log(JSON.stringify(data));
+        const response = await fetch(url, {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+        });
+        return response; // parses JSON response into native JavaScript objects
+      } catch (e) {
+        alert("Error with request");
+        console.log(e);
+      }
+    },
+    // New Ticket POST method implementation:
+    async updateTicketsData(url = "", data = {}) {
+      // Default options are marked with *
+      try {
+        console.log(JSON.stringify(data));
+        const response = await fetch(url, {
+          method: "PUT", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+        });
+        return response; // parses JSON response into native JavaScript objects
+      } catch (e) {
+        alert("Error with request");
+        console.log(e);
+      }
+    },
     setForEdit(data) {
       this.idOfTicketToEdit = data;
       let i;
@@ -633,12 +717,7 @@ export default {
       // Trigger submit handler
       this.handleEditTicketSubmit();
     },
-    handleNewTicketSubmit() {
-      // Exit when the form isn't valid
-      if (!this.checkNewTicketFormValidity()) {
-        return;
-      }
-      let itemsLength = store.items.length;
+    getCurrentTimestamp(){
       let curYear = new Date().getFullYear();
       let curMonth = new Date().getMonth();
       let curDay = new Date().getDay();
@@ -657,22 +736,30 @@ export default {
         curMins +
         ":" +
         curSecs;
-      //console.log(dateStr)
-      console.log("handle new ticket submit");
+      return dateStr
+    },
+    handleNewTicketSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkNewTicketFormValidity()) {
+        return;
+      }
+      let itemsLength = this.items.length;
+      let dateStr = this.getCurrentTimestamp();
+      console.log(this.newProject);
       let newDict = {
-        projectId: this.newProject.id,
+        ticketId: itemsLength + 1,
         Project: this.newProject.name,
-        TicketName: this.newName,
-        TicketId: itemsLength + 1,
-        slug: this.newName.toLowerCase(),
-        TicketDescription: this.newDesc,
-        Timestamp: dateStr,
         Tag: this.newTag,
+        TicketDescription: this.newDesc,
+        TicketName: this.newName,
+        Timestamp: dateStr,
+        projectId: this.newProject.id,
+        slug: this.newName.toLowerCase(),
       };
+      console.log(newDict);
       //Push the name to submitted names
-      store.items.push(newDict);
-      //console.log(store.tickets);
-      //reset newDict
+      this.postTicketsData("http://localhost:5000/api/v1/ticket/", newDict);
+      this.getTicketData("http://localhost:5000/api/v1/ticket/");
       //Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide("new-ticket-modal");
@@ -693,29 +780,50 @@ export default {
       if (!this.checkEditTicketFormValidity()) {
         return;
       }
+            let itemsLength = this.items.length;
+      let dateStr = this.getCurrentTimestamp();
+      console.log(this.newProject);
+      let newDict = {
+        ticketId: itemsLength + 1,
+        Project: this.newProject.name,
+        Tag: this.newTag,
+        TicketDescription: this.newDesc,
+        TicketName: this.newName,
+        Timestamp: dateStr,
+        projectId: this.newProject.id,
+        slug: this.newName.toLowerCase(),
+      };
+      console.log(newDict);
+      //Push the name to submitted names
+      this.updateTicketsData("http://localhost:5000/api/v1/ticket/", newDict);
+      this.getTicketData("http://localhost:5000/api/v1/ticket/");
+      //Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide("new-ticket-modal");
+      });
       //console.log("handlesubmit");
       //console.log(this.idOfTicketToEdit)
-      let i;
-      let ticketsLen = this.theItems.length;
-      console.log(ticketsLen);
-      for (i = 0; i < ticketsLen; i++) {
-        let curTicket = this.theItems[i];
-        console.log(curTicket.TicketId);
-        console.log(this.idOfTicketToEdit);
-        //console.log(curTicket.TicketId)
-        //console.log(this.curTicket.TicketId)
-        if (curTicket.TicketId === this.idOfTicketToEdit) {
-          console.log("made it");
-          curTicket.TicketName = this.editNewName;
-          curTicket.slug = this.editNewName.toLowerCase;
-          curTicket.TicketDescription = this.editNewDesc;
-          curTicket.ProjectId = this.editNewProject.id;
-          curTicket.Project = this.editNewProject.name;
-          curTicket.Tag = this.editNewTag;
-          console.log(curTicket);
-          break;
-        }
-      }
+      // let i;
+      // let ticketsLen = this.theItems.length;
+      // console.log(ticketsLen);
+      // for (i = 0; i < ticketsLen; i++) {
+      //   let curTicket = this.theItems[i];
+      //   console.log(curTicket.TicketId);
+      //   console.log(this.idOfTicketToEdit);
+      //   //console.log(curTicket.TicketId)
+      //   //console.log(this.curTicket.TicketId)
+      //   if (curTicket.TicketId === this.idOfTicketToEdit) {
+      //     console.log("made it");
+      //     curTicket.TicketName = this.editNewName;
+      //     curTicket.slug = this.editNewName.toLowerCase;
+      //     curTicket.TicketDescription = this.editNewDesc;
+      //     curTicket.ProjectId = this.editNewProject.id;
+      //     curTicket.Project = this.editNewProject.name;
+      //     curTicket.Tag = this.editNewTag;
+      //     console.log(curTicket);
+      //     break;
+      //   }
+      // }
       // //Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide("edit-ticket-modal");

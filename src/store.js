@@ -1,6 +1,32 @@
+// Example POST method implementation:
+async function getData(url = '') {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    //body: JSON.stringify(data) // body data type must match "Content-Type" header
+  });
+  //console.log(response)
+  return response.json(); // parses JSON response into native JavaScript objects
+}
+
+// postData('https://example.com/answer', { answer: 42 })
+//   .then(data => {
+//     console.log(data); // JSON data parsed by `data.json()` call
+//   });
+
 export default {
   user: null,
   bassimage: "bass.jpg",
+  
   destinations: [
     {
       name: "Project-List",
@@ -198,8 +224,8 @@ export default {
   tagTypes: [
     "serious", "bug", "test"
   ],
-  items: [{"TicketId":"0","Project":"BassTracker","TicketName":"First Ticket Bug","slug":"first ticket bug","TicketDescription":"This is the first BassTracker 'test bug'","Timestamp":"1/23/2021","Tag":"test"},
-  {"TicketId":"1", "Project":"OtherProject","TicketName":"First Project2 Ticket Bug","slug":"first project2 ticket bug","TicketDescription":"This is the first OtherProject 'test bug'","Timestamp":"1/23/2021","Tag":"bug"},
-  {"TicketId":"2", "Project":"BassTracker","TicketName":"2nd BassTracker Ticket Bug","slug":"2nd basstracker ticket bug","TicketDescription":"This is the second BassTracker 'test bug'","Timestamp":"1/23/2021","Tag":"serious"}],
-
+  items: getData('http://localhost:5000/api/v1/ticket/'),
+  // [{"TicketId":"0","Project":"BassTracker","TicketName":"First Ticket Bug","slug":"first ticket bug","TicketDescription":"This is the first BassTracker 'test bug'","Timestamp":"1/23/2021","Tag":"test"},
+  // {"TicketId":"1", "Project":"OtherProject","TicketName":"First Project2 Ticket Bug","slug":"first project2 ticket bug","TicketDescription":"This is the first OtherProject 'test bug'","Timestamp":"1/23/2021","Tag":"bug"},
+  // {"TicketId":"2", "Project":"BassTracker","TicketName":"2nd BassTracker Ticket Bug","slug":"2nd basstracker ticket bug","TicketDescription":"This is the second BassTracker 'test bug'","Timestamp":"1/23/2021","Tag":"serious"}],
 };
