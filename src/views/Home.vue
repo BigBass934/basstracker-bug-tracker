@@ -271,7 +271,7 @@
                   :aria-describedby="ariaDescribedby"
                   class="mt-1"
                 >
-                  <b-form-checkbox value="Project">Project</b-form-checkbox>
+                  <b-form-checkbox value="projectName">Project</b-form-checkbox>
                   <b-form-checkbox value="Tag">Tag</b-form-checkbox>
                   <b-form-checkbox value="Timestamp">Timestamp</b-form-checkbox>
                 </b-form-checkbox-group>
@@ -433,6 +433,7 @@ export default {
   components: {},
   data() {
     return {
+      // Fields/Columns for the Tickets Table
       fields: [
         {
           key: "projectName",
@@ -451,34 +452,83 @@ export default {
         "ticketDescription",
         "actions",
       ],
+      // Destinations (to be changed in future update(s))
       destinations: store.destinations,
-      // The ticket items
+      // The array/list of ticket items displayed in the Tickets Table on the main page
       items: [],
       // The List of Available Projects when creating a new Project
       projectOptions: [],
-      // -> Data used & Updated by/for the Create New Ticket(s) Modal
-      sortedBy: "",
+      
+      
+      // -> Data used & Updated by/for the Create New Ticket(s) Modal: 
+
+      // Variable used to store the entered new name for a new ticket being created
       newName: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, newName
+      (used mostly for methods for resetting the modals' background variables/information) */
       newNameState: null,
+
+      // Variable used to store the entered new description for a new ticket being created
       newDesc: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, newDesc
+      (used mostly for methods for resetting the modals' background variables/information) */
       newDescState: null,
+
+      // Variable used to store the entered new tag for a new ticket being created
       newTag: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, newTag
+      (used mostly for methods for resetting the modals' background variables/information) */
       newTagState: null,
+
+      /* Indicator/tracker used to track the current state of its associated variable, the new Project's Id
+      (used mostly for methods for resetting the modals' background variables/information) */
       newProjectIdState: null,
+
+      // Variable used to store the entered new project name for a new ticket being created
       newProject: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, newProject
+      (used mostly for methods for resetting the modals' background variables/information) */
       newProjectState: null,
 
       // -> Data used & Updated by/for the Edit New Ticket(s) Modal
+
+      // The variable used to store the id of the ticket that's currently being edited by the user
       idOfTicketToEdit: "",
-      editSortedBy: "",
+
+      // Variable used to store the entered new name for a ticket being edited
       editNewName: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, editNewName
+      (used mostly for methods for resetting the modals' background variables/information) */
       editNewNameState: null,
+
+      // Variable used to store the entered new description for a ticket being edited
       editNewDesc: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, editNewDesc
+      (used mostly for methods for resetting the modals' background variables/information) */
       editNewDescState: null,
+
+      // Variable used to store the entered new tag for a ticket being edited
       editNewTag: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, editNewTag
+      (used mostly for methods for resetting the modals' background variables/information) */
       editNewTagState: null,
+
+      /* Indicator/tracker used to track the current state of its associated variable, the new Project Id being assigned
+      (used mostly for methods for resetting the modals' background variables/information) */
       editNewProjectIdState: null,
+
+      // Variable used to store the entered new project name for a ticket being edited
       editNewProject: "",
+
+      /* Indicator/tracker used to track the current state of its associated variable, editNewProject
+      (used mostly for methods for resetting the modals' background variables/information) */
       editNewProjectState: null,
 
       // -> Data used & Updated by/for the table filtering interface
@@ -494,6 +544,7 @@ export default {
     };
   },
   created: function() {
+    // Ensures that the required data for the table is acquired on page creation
     this.getTicketData("http://localhost:5000/api/v1/ticket/");
     this.getProjectsData("http://localhost:5000/api/v1/project/");
   },
@@ -507,9 +558,11 @@ export default {
         });
     },
     tagTypes() {
+      // Return the different available tag categories to for choosing from the store.js
       return store.tagTypes;
     },
     getNewTagOptions() {
+      // Creates and returns a list for modals to display the available tag types for users to use while editing or creating new tickets
       let finalTagList = [];
       let i;
       let tagsLen = this.tagTypes.length;
@@ -521,10 +574,10 @@ export default {
         };
         finalTagList.push(curDict);
       }
-      //console.log(finalTagList);
       return finalTagList;
     },
     getNewProjectOptions() {
+      // Creates and returns a list for modals to display the available projects for users to assign tickets to while editing or creating them.
       let finalProjectList = [];
       let i;
       let projectsLen = this.projectOptions.length;
@@ -537,7 +590,6 @@ export default {
         };
         finalProjectList.push(curDict);
       }
-      //console.log(finalProjectList);
       return finalProjectList;
     },
   },
@@ -546,8 +598,9 @@ export default {
     //this.totalRows = this.items.length;
   },
   methods: {
-    // All Tickets GET method implementation:
     async getTicketData(url = "") {
+      // All Tickets GET method implementation:
+
       // Default options are marked with *
       try {
         const response = await fetch(url, {
@@ -557,25 +610,21 @@ export default {
           credentials: "same-origin", // include, *same-origin, omit
           headers: {
             "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
           },
           redirect: "follow", // manual, *follow, error
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          //body: JSON.stringify(data) // body data type must match "Content-Type" header
         });
-        //console.log(response)
         let theJson = await response.json();
-        //console.log(this.items);
         this.items = theJson;
-        //console.log(this.items);
         return theJson; // parses JSON response into native JavaScript objects
       } catch (e) {
         alert("Error with request");
         console.log(e);
       }
     },
-    // All Projects GET method implementation:
     async getProjectsData(url = "") {
+      // All Projects GET method implementation:
+
       // Default options are marked with *
       try {
         const response = await fetch(url, {
@@ -589,25 +638,20 @@ export default {
           },
           redirect: "follow", // manual, *follow, error
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          //body: JSON.stringify(data) // body data type must match "Content-Type" header
         });
-        //console.log(response)
         let theJson = await response.json();
-        //console.log(theJson)
-        //console.log(this.items);
         this.projectOptions = theJson;
-        //console.log(this.items);
         return theJson; // parses JSON response into native JavaScript objects
       } catch (e) {
         alert("Error with request");
         console.log(e);
       }
     },
-    // New Ticket POST method implementation:
     async postTicketsData(url = "", data = {}) {
+      // New Ticket POST method implementation:
+
       // Default options are marked with *
       try {
-        console.log(JSON.stringify(data));
         const response = await fetch(url, {
           method: "POST", // *GET, POST, PUT, DELETE, etc.
           mode: "cors", // no-cors, *cors, same-origin
@@ -615,7 +659,6 @@ export default {
           credentials: "same-origin", // include, *same-origin, omit
           headers: {
             "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
           },
           redirect: "follow", // manual, *follow, error
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -627,12 +670,11 @@ export default {
         console.log(e);
       }
     },
-    // New Ticket POST method implementation:
     async updateTicketsData(url = "", data = {}) {
+      // New Ticket PUT method implementation:
+
       // Default options are marked with *
       try {
-        console.log(JSON.stringify(data));
-        console.log(url);
         const response = await fetch(url, {
           method: "PUT", // *GET, POST, PUT, DELETE, etc.
           mode: "cors", // no-cors, *cors, same-origin
@@ -640,7 +682,6 @@ export default {
           credentials: "same-origin", // include, *same-origin, omit
           headers: {
             "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
           },
           redirect: "follow", // manual, *follow, error
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -654,9 +695,8 @@ export default {
       }
     },
     setForEdit(data) {
-      console.log(data)
+      // Method that gets necessary data about the row/ticket that is about to have its information edited.
       this.idOfTicketToEdit = data;
-      console.log(this.idOfTicketToEdit)
       let i;
       let ticketsLen = this.items.length;
       for (i = 0; i < ticketsLen; i++) {
@@ -669,6 +709,7 @@ export default {
       }
     },
     setTotalRows() {
+      // Sets the total amount of rows for the table based on how many items there are in its data.
       this.totalRows = this.items.length;
     },
     onFiltered(filteredItems) {
@@ -677,6 +718,7 @@ export default {
       this.currentPage = 1;
     },
     checkNewTicketFormValidity() {
+      // Checks whether all required fields are filled out in the New Ticket Modal and returns valid or not.
       const valid = this.$refs.form.checkValidity();
       this.newNameState = valid;
       this.newDescState = valid;
@@ -684,6 +726,7 @@ export default {
       return valid;
     },
     checkEditTicketFormValidity() {
+      // Checks whether all required fields are filled out in the Edit Ticket Modal and returns valid or not.
       const valid = this.$refs.form.checkValidity();
       this.editNewNameState = valid;
       this.editNewDescState = valid;
@@ -691,6 +734,7 @@ export default {
       return valid;
     },
     resetNewTicketModal() {
+      // Resets all of the behind-the-scenes stored form data for the New Ticket Modal to blank 
       this.newName = "";
       this.newNameState = null;
       this.newDesc = "";
@@ -699,6 +743,7 @@ export default {
       this.newTagState = null;
     },
     resetEditTicketModal() {
+      // Resets all of the behind-the-scenes stored form data for the Edit Ticket Modal to blank 
       this.editNewName = "";
       this.editNewNameState = null;
       this.editNewDesc = "";
@@ -707,18 +752,19 @@ export default {
       this.editNewTagState = null;
     },
     handleNewTicketOk(bvModalEvt) {
-      // Prevent modal from closing
+      // Prevent new ticket modal from closing
       bvModalEvt.preventDefault();
       // Trigger submit handler
       this.handleNewTicketSubmit();
     },
     handleEditTicketOk(bvModalEvt) {
-      // Prevent modal from closing
+      // Prevent edit ticket modal from closing
       bvModalEvt.preventDefault();
       // Trigger submit handler
       this.handleEditTicketSubmit();
     },
     getCurrentTimestamp(){
+      // Returns the timestamp of the current date and exact time of day down to seconds, based on your local time zone
       let curYear = new Date().getFullYear();
       let curMonth = new Date().getMonth();
       let curDay = new Date().getDay();
@@ -740,13 +786,13 @@ export default {
       return dateStr
     },
     handleNewTicketSubmit() {
+      // Handles what happens when the New Ticket Modal receives a submission
       // Exit when the form isn't valid
       if (!this.checkNewTicketFormValidity()) {
         return;
       }
       let itemsLength = this.items.length;
       let dateStr = this.getCurrentTimestamp();
-      console.log(this.newProject);
       let newDict = {
         ticketId: itemsLength + 1,
         projectName: this.newProject.name,
@@ -757,7 +803,6 @@ export default {
         projectId: this.newProject.id,
         ticketSlug: this.newName.toLowerCase(),
       };
-      console.log(newDict);
       //Push the name to submitted names & refresh the table items
       this.postTicketsData("http://localhost:5000/api/v1/ticket/", newDict);
       //Hide the modal manually
@@ -766,6 +811,7 @@ export default {
       });
     },
     findProjectName(givenId) {
+      // Returns the name of a project given its id
       let i;
       let projectLen = this.projects.length;
       for (i = 0; i < projectLen; i++) {
@@ -776,13 +822,12 @@ export default {
       }
     },
     handleEditTicketSubmit() {
+      // Handles what happens when the Edit Ticket Modal receives a submission
       // Exit when the form isn't valid
       if (!this.checkEditTicketFormValidity()) {
         return;
       }
       let dateStr = this.getCurrentTimestamp();
-      //console.log(this.editNewProject);
-      console.log(this.idOfTicketToEdit)
       let newDict = {
         ticketId: this.idOfTicketToEdit,
         projectName: this.editNewProject.name,
@@ -793,7 +838,6 @@ export default {
         projectId: this.editNewProject.id,
         ticketSlug: this.editNewName.toLowerCase(),
       };
-      console.log(newDict);
       //Push the name to submitted names
       this.updateTicketsData(`http://localhost:5000/api/v1/ticket/${this.idOfTicketToEdit}`, newDict);
       this.getTicketData("http://localhost:5000/api/v1/ticket/");
