@@ -334,7 +334,7 @@
               <b-button
                 size="sm"
                 v-b-modal.edit-ticket-modal
-                @click="setForEdit(row.item.TicketId)"
+                @click="setForEdit(row.item.ticketId)"
                 >Edit Ticket Info</b-button
               >
               <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
@@ -346,7 +346,7 @@
                     <b>Parent Project Name:</b>
                   </b-col>
                   <b-col>
-                    {{ row.item.Project }}
+                    {{ row.item.projectName }}
                   </b-col>
                 </b-row>
                 <b-row class="mb-2">
@@ -375,7 +375,7 @@
                       Ticket Name
                     </b>
                   </b-col>
-                  <b-col>{{ row.item.TicketName }}</b-col>
+                  <b-col>{{ row.item.ticketName }}</b-col>
                 </b-row>
                 <b-row class="mb-2">
                   <b-col sm="3" class="text-sm-right">
@@ -383,7 +383,7 @@
                       Ticket Slug
                     </b>
                   </b-col>
-                  <b-col>{{ row.item.slug }}</b-col>
+                  <b-col>{{ row.item.ticketSlug }}</b-col>
                 </b-row>
                 <b-row class="mb-2">
                   <b-col sm="3" class="text-sm-right">
@@ -392,7 +392,7 @@
                     </b>
                   </b-col>
                   <b-col>
-                    {{ row.item.Tag }}
+                    {{ row.item.ticketTag }}
                   </b-col>
                 </b-row>
                 <b-row class="mb-2">
@@ -401,7 +401,7 @@
                       Ticket Description
                     </b>
                   </b-col>
-                  <b-col>{{ row.item.TicketDescription }}</b-col>
+                  <b-col>{{ row.item.ticketDescription }}</b-col>
                 </b-row>
                 <b-row class="mb-2">
                   <b-col sm="3" class="text-sm-right">
@@ -410,7 +410,7 @@
                     </b>
                   </b-col>
                   <b-col>
-                    {{ row.item.Timestamp }}
+                    {{ row.item.time_Stamp }}
                   </b-col>
                 </b-row>
                 <b-button size="sm" @click="row.toggleDetails">
@@ -435,20 +435,20 @@ export default {
     return {
       fields: [
         {
-          key: "Project",
+          key: "projectName",
           label: "Project",
           sortable: true,
           sortDirection: "desc",
         },
-        "TicketName",
-        { key: "Tag", label: "Tag", sortable: true, sortDirection: "desc" },
+        "ticketName",
+        { key: "ticketTag", label: "Tag", sortable: true, sortDirection: "desc" },
         {
-          key: "Timestamp",
+          key: "time_Stamp",
           label: "Timestamp",
           sortable: true,
           sortDirection: "desc",
         },
-        "TicketDescription",
+        "ticketDescription",
         "actions",
       ],
       destinations: store.destinations,
@@ -632,6 +632,7 @@ export default {
       // Default options are marked with *
       try {
         console.log(JSON.stringify(data));
+        console.log(url);
         const response = await fetch(url, {
           method: "PUT", // *GET, POST, PUT, DELETE, etc.
           mode: "cors", // no-cors, *cors, same-origin
@@ -645,6 +646,7 @@ export default {
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(data), // body data type must match "Content-Type" header
         });
+        this.getTicketData("http://localhost:5000/api/v1/ticket/");
         return response; // parses JSON response into native JavaScript objects
       } catch (e) {
         alert("Error with request");
@@ -652,7 +654,9 @@ export default {
       }
     },
     setForEdit(data) {
+      console.log(data)
       this.idOfTicketToEdit = data;
+      console.log(this.idOfTicketToEdit)
       let i;
       let ticketsLen = this.items.length;
       for (i = 0; i < ticketsLen; i++) {
@@ -663,8 +667,6 @@ export default {
           break;
         }
       }
-      //console.log(this.editNewName);
-      //console.log(this.editNewDesc);
     },
     setTotalRows() {
       this.totalRows = this.items.length;
@@ -697,7 +699,6 @@ export default {
       this.newTagState = null;
     },
     resetEditTicketModal() {
-      this.idOfTicketToEdit = "";
       this.editNewName = "";
       this.editNewNameState = null;
       this.editNewDesc = "";
@@ -748,18 +749,17 @@ export default {
       console.log(this.newProject);
       let newDict = {
         ticketId: itemsLength + 1,
-        Project: this.newProject.name,
-        Tag: this.newTag,
-        TicketDescription: this.newDesc,
-        TicketName: this.newName,
-        Timestamp: dateStr,
+        projectName: this.newProject.name,
+        ticketTag: this.newTag,
+        ticketDescription: this.newDesc,
+        ticketName: this.newName,
+        time_Stamp: dateStr,
         projectId: this.newProject.id,
-        slug: this.newName.toLowerCase(),
+        ticketSlug: this.newName.toLowerCase(),
       };
       console.log(newDict);
-      //Push the name to submitted names
+      //Push the name to submitted names & refresh the table items
       this.postTicketsData("http://localhost:5000/api/v1/ticket/", newDict);
-      this.getTicketData("http://localhost:5000/api/v1/ticket/");
       //Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide("new-ticket-modal");
@@ -780,51 +780,25 @@ export default {
       if (!this.checkEditTicketFormValidity()) {
         return;
       }
-            let itemsLength = this.items.length;
       let dateStr = this.getCurrentTimestamp();
-      console.log(this.newProject);
+      //console.log(this.editNewProject);
+      console.log(this.idOfTicketToEdit)
       let newDict = {
-        ticketId: itemsLength + 1,
-        Project: this.newProject.name,
-        Tag: this.newTag,
-        TicketDescription: this.newDesc,
-        TicketName: this.newName,
-        Timestamp: dateStr,
-        projectId: this.newProject.id,
-        slug: this.newName.toLowerCase(),
+        ticketId: this.idOfTicketToEdit,
+        projectName: this.editNewProject.name,
+        ticketTag: this.editNewTag,
+        ticketDescription: this.editNewDesc,
+        ticketName: this.editNewName,
+        time_Stamp: dateStr,
+        projectId: this.editNewProject.id,
+        ticketSlug: this.editNewName.toLowerCase(),
       };
       console.log(newDict);
       //Push the name to submitted names
-      this.updateTicketsData("http://localhost:5000/api/v1/ticket/", newDict);
+      this.updateTicketsData(`http://localhost:5000/api/v1/ticket/${this.idOfTicketToEdit}`, newDict);
       this.getTicketData("http://localhost:5000/api/v1/ticket/");
+      this.idOfTicketToEdit = "";
       //Hide the modal manually
-      this.$nextTick(() => {
-        this.$bvModal.hide("new-ticket-modal");
-      });
-      //console.log("handlesubmit");
-      //console.log(this.idOfTicketToEdit)
-      // let i;
-      // let ticketsLen = this.theItems.length;
-      // console.log(ticketsLen);
-      // for (i = 0; i < ticketsLen; i++) {
-      //   let curTicket = this.theItems[i];
-      //   console.log(curTicket.TicketId);
-      //   console.log(this.idOfTicketToEdit);
-      //   //console.log(curTicket.TicketId)
-      //   //console.log(this.curTicket.TicketId)
-      //   if (curTicket.TicketId === this.idOfTicketToEdit) {
-      //     console.log("made it");
-      //     curTicket.TicketName = this.editNewName;
-      //     curTicket.slug = this.editNewName.toLowerCase;
-      //     curTicket.TicketDescription = this.editNewDesc;
-      //     curTicket.ProjectId = this.editNewProject.id;
-      //     curTicket.Project = this.editNewProject.name;
-      //     curTicket.Tag = this.editNewTag;
-      //     console.log(curTicket);
-      //     break;
-      //   }
-      // }
-      // //Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide("edit-ticket-modal");
       });
