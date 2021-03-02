@@ -793,6 +793,16 @@ export default {
       }
       let itemsLength = this.items.length;
       let dateStr = this.getCurrentTimestamp();
+      let celvar = '';
+      if(this.newTag === "serious"){
+        celvar = 'danger';
+      }
+      if(this.newTag === "bug"){
+        celvar = 'warning';
+      }
+      if(this.newTag === "test"){
+        celvar = 'white'
+      }
       let newDict = {
         ticketId: itemsLength + 1,
         projectName: this.newProject.name,
@@ -802,6 +812,7 @@ export default {
         time_Stamp: dateStr,
         projectId: this.newProject.id,
         ticketSlug: this.newName.toLowerCase(),
+        _cellVariants: celvar
       };
       //Push the name to submitted names & refresh the table items
       this.postTicketsData("http://localhost:5000/api/v1/ticket/", newDict);
@@ -828,6 +839,16 @@ export default {
         return;
       }
       let dateStr = this.getCurrentTimestamp();
+      let celvar = '';
+      if(this.editNewTag === "serious"){
+        celvar = 'danger';
+      }
+      if(this.editNewTag === "bug"){
+        celvar = 'warning';
+      }
+      if(this.editNewTag === "test"){
+        celvar = 'white'
+      }
       let newDict = {
         ticketId: this.idOfTicketToEdit,
         projectName: this.editNewProject.name,
@@ -837,6 +858,7 @@ export default {
         time_Stamp: dateStr,
         projectId: this.editNewProject.id,
         ticketSlug: this.editNewName.toLowerCase(),
+        _cellVariants: celvar
       };
       //Push the name to submitted names
       this.updateTicketsData(`http://localhost:5000/api/v1/ticket/${this.idOfTicketToEdit}`, newDict);
