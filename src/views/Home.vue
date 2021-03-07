@@ -816,6 +816,7 @@ export default {
       };
       //Push the name to submitted names & refresh the table items
       this.postTicketsData("https://bass-tracker-backend.herokuapp.com/api/v1/ticket/", newDict);
+      this.getTicketData("https://bass-tracker-backend.herokuapp.com/api/v1/ticket/");
       //Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide("new-ticket-modal");
