@@ -545,8 +545,8 @@ export default {
   },
   created: function() {
     // Ensures that the required data for the table is acquired on page creation
-    this.getTicketData("http://localhost:5000/api/v1/ticket/");
-    this.getProjectsData("http://localhost:5000/api/v1/project/");
+    this.getTicketData("https://bass-tracker-backend.herokuapp.com/api/v1/ticket/");
+    this.getProjectsData("https://bass-tracker-backend.herokuapp.com/api/v1/project/");
   },
   computed: {
     sortOptions() {
@@ -687,7 +687,7 @@ export default {
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(data), // body data type must match "Content-Type" header
         });
-        this.getTicketData("http://localhost:5000/api/v1/ticket/");
+        this.getTicketData("https://bass-tracker-backend.herokuapp.com/api/v1/ticket/");
         return response; // parses JSON response into native JavaScript objects
       } catch (e) {
         alert("Error with request");
@@ -815,7 +815,7 @@ export default {
         _cellVariants: celvar
       };
       //Push the name to submitted names & refresh the table items
-      this.postTicketsData("http://localhost:5000/api/v1/ticket/", newDict);
+      this.postTicketsData("https://bass-tracker-backend.herokuapp.com/api/v1/ticket/", newDict);
       //Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide("new-ticket-modal");
@@ -861,8 +861,8 @@ export default {
         _cellVariants: celvar
       };
       //Push the name to submitted names
-      this.updateTicketsData(`http://localhost:5000/api/v1/ticket/${this.idOfTicketToEdit}`, newDict);
-      this.getTicketData("http://localhost:5000/api/v1/ticket/");
+      this.updateTicketsData(`https://bass-tracker-backend.herokuapp.com/api/v1/ticket/${this.idOfTicketToEdit}`, newDict);
+      this.getTicketData("https://bass-tracker-backend.herokuapp.com/api/v1/ticket/");
       this.idOfTicketToEdit = "";
       //Hide the modal manually
       this.$nextTick(() => {
